@@ -5,6 +5,9 @@
 
 #define TAILLE_PAQUET_COMPLET 52
 #define TAILLE_PAQUET_TOUR 21
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_BLUE "\x1b[34m"
+#define ANSI_COLOR_RESET "\x1b[0m"
 
 typedef struct une_carte *Carte;
 /*
@@ -179,14 +182,12 @@ int main()
 
     // Faire choisir une carte au hasard
     printf("Choisir une carte parmi celles ci-dessous :\n");
-    for (int j = 0; j < 7; j++)
+    for (int j = 0; j < 21; j++)
     {
-        for (int k = 0; k < 3; k++)
-        {
-            int index = 7 * k + j;
-            printf("[%-2d] : %5s de %1s        ", index + 1, paquetTour[index]->valeur, paquetTour[index]->signe);
-        }
-        printf("\n");
+        if (strcmp(paquetTour[j]->signe, "♥") == 0 || strcmp(paquetTour[j]->signe, "♦") == 0)
+            printf(ANSI_COLOR_RED "%5s de %1s" ANSI_COLOR_RESET "\n", paquetTour[j]->valeur, paquetTour[j]->signe);
+        else
+            printf(ANSI_COLOR_BLUE "%5s de %1s" ANSI_COLOR_RESET "\n", paquetTour[j]->valeur, paquetTour[j]->signe);
     }
     char checkEntree;
     printf("Appuie sur Entrée quand tu as choisi.\n");
