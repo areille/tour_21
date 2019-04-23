@@ -12,38 +12,59 @@ typedef struct une_carte *Carte;
 */
 struct une_carte
 {
-    int valeur;
+    char *valeur;
     char *signe;
 };
 
 /*
 * Construit dynamiquement une carte à partir d'une valeur et d'un signe.
 */
-Carte construireCarte(int valeur, char *signe)
+Carte construireCarte(char *valeur, char *signe)
 {
     Carte carte = malloc(sizeof(struct une_carte));
+    carte->valeur = (char *)malloc((sizeof(char)) * (strlen(valeur) + 1));
     carte->signe = (char *)malloc((sizeof(char)) * (strlen(signe) + 1));
-    if (carte->signe == NULL)
+    if (carte->valeur == NULL || carte->signe == NULL)
     {
         perror("Allocation memoire");
         exit(1);
     }
-    carte->valeur = valeur;
+    strncpy(carte->valeur, valeur, strlen(valeur) + 1);
     strncpy(carte->signe, signe, strlen(signe) + 1);
     return carte;
 }
 
 void afficherCarte(Carte carte)
 {
-    printf("%d de %s \n", carte->valeur, carte->signe);
+    printf("%s de %s \n", carte->valeur, carte->signe);
 }
 
 void detruireCarte(Carte carte)
 {
     if (carte != NULL)
     {
+        free(carte->valeur);
         free(carte->signe);
         free(carte);
+    }
+}
+
+char *retourneValeur(int valeurIndex)
+{
+    char *str = malloc(sizeof(char) * 2);
+    switch (valeurIndex)
+    {
+    case 1:
+        return "As";
+    case 11:
+        return "Valet";
+    case 12:
+        return "Dame";
+    case 13:
+        return "Roi";
+    default:
+        sprintf(str, "%d", valeurIndex);
+        return str;
     }
 }
 
@@ -79,7 +100,9 @@ Carte *construirePaquetComplet()
         signe = retourneSigne(signeIndex);
         for (int i = 0; i < NB_CARTES_PAR_SIGNE; i++)
         {
-            *(paquetComplet + (signeIndex * NB_CARTES_PAR_SIGNE) + i) = construireCarte(i + 1, signe);
+            char *valeur;
+            valeur = retourneValeur(i + 1);
+            *(paquetComplet + (signeIndex * NB_CARTES_PAR_SIGNE) + i) = construireCarte(valeur, signe);
         }
     }
     return paquetComplet;
@@ -161,7 +184,7 @@ int main()
         for (int k = 0; k < 3; k++)
         {
             int index = 7 * k + j;
-            printf("[%-2d] : %2d de %1s        ", index + 1, paquetTour[index]->valeur, paquetTour[index]->signe);
+            printf("[%-2d] : %5s de %1s        ", index + 1, paquetTour[index]->valeur, paquetTour[index]->signe);
         }
         printf("\n");
     }
