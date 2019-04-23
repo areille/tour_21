@@ -2,31 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-const int TAILLE_PAQUET_COMPLET = 52;
+#define TAILLE_PAQUET_COMPLET 52
 
-struct Carte
+typedef struct une_carte *Carte;
+struct une_carte
 {
     int valeur;
     char signe[1];
-} carte_struct;
+};
 
-struct Carte construireCarte(int valeur, char *signe)
+Carte construireCarte(int valeur, char *signe)
 {
-    struct Carte carte;
-    carte.valeur = valeur;
-    strcpy(carte.signe, signe);
-    afficherCarte(&carte);
+    Carte carte = malloc(sizeof(struct une_carte));
+    carte->valeur = valeur;
+    strcpy(carte->signe, signe);
     return carte;
 }
 
-void afficherCarte(struct Carte *carte)
+void afficherCarte(Carte carte)
 {
     printf("%d de %s \n", carte->valeur, carte->signe);
 }
 
-struct Carte *construirePaquet()
+Carte *construirePaquet()
 {
-    struct Carte *paquetComplet = malloc(sizeof(carte_struct));
+    Carte *paquetComplet = malloc((sizeof(struct une_carte) * TAILLE_PAQUET_COMPLET) + 1);
     int signe;
     for (signe = 1; signe <= 4; signe++)
     {
@@ -34,51 +34,50 @@ struct Carte *construirePaquet()
         {
             for (int i = 0; i < 13; i++)
             {
-                paquetComplet[i] = construireCarte(i + 1, "♠");
-                afficherCarte(&paquetComplet[i]);
+                *(paquetComplet + i) = construireCarte(i + 1, "♠");
             }
         }
         if (signe == 2)
         {
             for (int i = 0; i < 13; i++)
             {
-                paquetComplet[13 + i] = construireCarte(i + 1, "♣");
+                *(paquetComplet + 13 + i) = construireCarte(i + 1, "♣");
             }
         }
         if (signe == 3)
         {
             for (int i = 0; i < 13; i++)
             {
-                paquetComplet[26 + i] = construireCarte(i + 1, "♥");
+                *(paquetComplet + 26 + i) = construireCarte(i + 1, "♥");
             }
         }
         if (signe == 4)
         {
             for (int i = 0; i < 13; i++)
             {
-                paquetComplet[39 + i] = construireCarte(i + 1, "♦");
+                *(paquetComplet + 39 + i) = construireCarte(i + 1, "♦");
             }
         }
     }
     return paquetComplet;
 }
 
-void afficherPaquet(struct Carte *paquet, int taille_paquet)
+void afficherPaquet(Carte *paquet, int taille_paquet)
 {
     for (int i = 0; i < taille_paquet; i++)
     {
-        afficherCarte(&paquet[i]);
+        afficherCarte(paquet[i]);
     }
 }
 
-void detruirePaquet(struct Carte *paquet)
+void detruirePaquet(Carte *paquet)
 {
     free(paquet);
 }
 
 int main()
 {
-    struct Carte *paquetComplet = construirePaquet();
+    Carte *paquetComplet = construirePaquet();
     afficherPaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
     detruirePaquet(paquetComplet);
 }
