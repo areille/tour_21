@@ -117,9 +117,8 @@ static int nombreAleatoire(int maximum)
     int limite = RAND_MAX - RAND_MAX % maximum;
     int aleatoire;
     do
-    {
         aleatoire = rand();
-    } while (aleatoire >= limite);
+    while (aleatoire >= limite);
     return aleatoire % maximum;
 }
 
@@ -140,9 +139,7 @@ void melangerPaquet(Carte *paquet, int taille_paquet)
 void afficherPaquet(Carte *paquet, int taille_paquet)
 {
     for (int i = 0; i < taille_paquet; i++)
-    {
         afficherCarte(paquet[i]);
-    }
 }
 
 void detruirePaquet(Carte *paquet, int taille_paquet)
@@ -150,9 +147,7 @@ void detruirePaquet(Carte *paquet, int taille_paquet)
     if (paquet != NULL)
     {
         for (int i = 0; i < taille_paquet; i++)
-        {
             detruireCarte(*(paquet + i));
-        }
         free(paquet);
     }
 }
@@ -162,22 +157,13 @@ int main()
     // Prendre un paquet de cartes
     Carte *paquetComplet = construirePaquetComplet();
     Carte *paquetTour = malloc((sizeof(struct une_carte) * TAILLE_PAQUET_TOUR) + 1);
-    Carte carteChoisie;
-    // printf("PAQUET COMPLET :\n");
-    // afficherPaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
 
     // Mélanger le paquet
     melangerPaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
-    // printf("PAQUET MÉLANGÉ :\n");
-    // afficherPaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
 
     // Garder 21 cartes
     for (int i = 0; i < TAILLE_PAQUET_TOUR; i++)
-    {
         paquetTour[i] = construireCarte(paquetComplet[i]->valeur, paquetComplet[i]->signe);
-    }
-    // printf("PAQUET DU TOUR :\n");
-    // afficherPaquet(paquetTour, TAILLE_PAQUET_TOUR);
     detruirePaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
 
     // Faire choisir une carte au hasard
