@@ -39,7 +39,10 @@ Carte construireCarte(char *valeur, char *signe)
 
 void afficherCarte(Carte carte)
 {
-    printf("%s de %s \n", carte->valeur, carte->signe);
+    if (strcmp(carte->signe, "♥") == 0 || strcmp(carte->signe, "♦") == 0)
+        printf(ANSI_COLOR_RED "%5s de %1s" ANSI_COLOR_RESET "\n", carte->valeur, carte->signe);
+    else
+        printf(ANSI_COLOR_BLUE "%5s de %1s" ANSI_COLOR_RESET "\n", carte->valeur, carte->signe);
 }
 
 void detruireCarte(Carte carte)
@@ -154,27 +157,23 @@ void detruirePaquet(Carte *paquet, int taille_paquet)
 
 int main()
 {
+    int numeroPaquet, i;
     // Prendre un paquet de cartes
     Carte *paquetComplet = construirePaquetComplet();
     Carte *paquetTour = malloc((sizeof(struct une_carte) * TAILLE_PAQUET_TOUR) + 1);
+    Carte petitsPaquets[3][7];
 
     // Mélanger le paquet
     melangerPaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
 
     // Garder 21 cartes
-    for (int i = 0; i < TAILLE_PAQUET_TOUR; i++)
+    for (i = 0; i < TAILLE_PAQUET_TOUR; i++)
         paquetTour[i] = construireCarte(paquetComplet[i]->valeur, paquetComplet[i]->signe);
     detruirePaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
 
     // Faire choisir une carte au hasard
     printf("Choisir une carte parmi celles ci-dessous :\n");
-    for (int j = 0; j < 21; j++)
-    {
-        if (strcmp(paquetTour[j]->signe, "♥") == 0 || strcmp(paquetTour[j]->signe, "♦") == 0)
-            printf(ANSI_COLOR_RED "%5s de %1s" ANSI_COLOR_RESET "\n", paquetTour[j]->valeur, paquetTour[j]->signe);
-        else
-            printf(ANSI_COLOR_BLUE "%5s de %1s" ANSI_COLOR_RESET "\n", paquetTour[j]->valeur, paquetTour[j]->signe);
-    }
+    afficherPaquet(paquetTour, TAILLE_PAQUET_TOUR);
     char checkEntree;
     printf("Appuie sur Entrée quand tu as choisi.\n");
     while (1)
@@ -184,7 +183,133 @@ int main()
             break;
         checkEntree = getchar();
     }
-    printf("la suite\n");
+
+    // Faire 3 paquets
+
+    for (i = 0; i < TAILLE_PAQUET_TOUR / 3; i++)
+    {
+        petitsPaquets[0][i] = paquetTour[3 * i];
+        petitsPaquets[1][i] = paquetTour[3 * i + 1];
+        petitsPaquets[2][i] = paquetTour[3 * i + 2];
+    }
+    printf("Paquet 1 :\n");
+    afficherPaquet(petitsPaquets[0], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+    printf("Paquet 2 :\n");
+    afficherPaquet(petitsPaquets[1], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+    printf("Paquet 3 :\n");
+    afficherPaquet(petitsPaquets[2], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+
+    printf("Dans quel paquet se trouve ta carte?\n");
+    scanf("%d", &numeroPaquet);
+    if (numeroPaquet < 1 || numeroPaquet > 3)
+        printf("Valeur invalide.");
+    else
+    {
+        if (numeroPaquet != 2)
+        {
+            Carte tmp[7];
+            for (i = 0; i < 7; i++)
+            {
+                tmp[i] = petitsPaquets[1][i];
+                petitsPaquets[1][i] = petitsPaquets[numeroPaquet - 1][i];
+                petitsPaquets[numeroPaquet - 1][i] = tmp[i];
+            }
+        }
+    }
+
+    for (i = 0; i < TAILLE_PAQUET_TOUR; i++)
+    {
+        paquetTour[i] = petitsPaquets[TAILLE_PAQUET_TOUR % 7][i];
+    }
+
+    // Re Faire 3 paquets
+
+    for (i = 0; i < TAILLE_PAQUET_TOUR / 3; i++)
+    {
+        petitsPaquets[0][i] = paquetTour[3 * i];
+        petitsPaquets[1][i] = paquetTour[3 * i + 1];
+        petitsPaquets[2][i] = paquetTour[3 * i + 2];
+    }
+    printf("Paquet 1 :\n");
+    afficherPaquet(petitsPaquets[0], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+    printf("Paquet 2 :\n");
+    afficherPaquet(petitsPaquets[1], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+    printf("Paquet 3 :\n");
+    afficherPaquet(petitsPaquets[2], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+
+    printf("Dans quel paquet se trouve ta carte?\n");
+    scanf("%d", &numeroPaquet);
+    if (numeroPaquet < 1 || numeroPaquet > 3)
+        printf("Valeur invalide.");
+    else
+    {
+        if (numeroPaquet != 2)
+        {
+            Carte tmp[7];
+            for (i = 0; i < 7; i++)
+            {
+                tmp[i] = petitsPaquets[1][i];
+                petitsPaquets[1][i] = petitsPaquets[numeroPaquet - 1][i];
+                petitsPaquets[numeroPaquet - 1][i] = tmp[i];
+            }
+        }
+    }
+
+    for (i = 0; i < TAILLE_PAQUET_TOUR; i++)
+    {
+        paquetTour[i] = petitsPaquets[TAILLE_PAQUET_TOUR % 7][i];
+    }
+
+    // Re Re Faire 3 paquets
+
+    for (i = 0; i < TAILLE_PAQUET_TOUR / 3; i++)
+    {
+        petitsPaquets[0][i] = paquetTour[3 * i];
+        petitsPaquets[1][i] = paquetTour[3 * i + 1];
+        petitsPaquets[2][i] = paquetTour[3 * i + 2];
+    }
+    printf("Paquet 1 :\n");
+    afficherPaquet(petitsPaquets[0], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+    printf("Paquet 2 :\n");
+    afficherPaquet(petitsPaquets[1], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+    printf("Paquet 3 :\n");
+    afficherPaquet(petitsPaquets[2], TAILLE_PAQUET_TOUR / 3);
+    printf("\n");
+
+    printf("Dans quel paquet se trouve ta carte?\n");
+    scanf("%d", &numeroPaquet);
+    if (numeroPaquet < 1 || numeroPaquet > 3)
+        printf("Valeur invalide.");
+    else
+    {
+        if (numeroPaquet != 2)
+        {
+            Carte tmp[7];
+            for (i = 0; i < 7; i++)
+            {
+                tmp[i] = petitsPaquets[1][i];
+                petitsPaquets[1][i] = petitsPaquets[numeroPaquet - 1][i];
+                petitsPaquets[numeroPaquet - 1][i] = tmp[i];
+            }
+        }
+    }
+
+    for (i = 0; i < TAILLE_PAQUET_TOUR; i++)
+    {
+        paquetTour[i] = petitsPaquets[TAILLE_PAQUET_TOUR % 7][i];
+    }
+
+    printf("Ta carte est ...\n");
+    afficherCarte(paquetTour[10]);
+
     // ...
     detruirePaquet(paquetTour, TAILLE_PAQUET_TOUR);
 }
