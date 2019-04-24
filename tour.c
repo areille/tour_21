@@ -5,6 +5,7 @@
 
 #define TAILLE_PAQUET_COMPLET 52
 #define TAILLE_PAQUET_TOUR 21
+#define TAILLE_PETIT_PAQUET 7
 #define ANSI_COLOR_RED "\x1b[31m"
 #define ANSI_COLOR_BLUE "\x1b[34m"
 #define ANSI_COLOR_RESET "\x1b[0m"
@@ -161,7 +162,7 @@ int main()
     // Prendre un paquet de cartes
     Carte *paquetComplet = construirePaquetComplet();
     Carte paquetTour[TAILLE_PAQUET_TOUR];
-    Carte petitsPaquets[3][7];
+    Carte petitsPaquets[3][TAILLE_PETIT_PAQUET]; // 3 paquets de 7 cartes
 
     // Mélanger le paquet
     melangerPaquet(paquetComplet, TAILLE_PAQUET_COMPLET);
@@ -209,10 +210,11 @@ int main()
             printf("Valeur invalide.");
         else
         {
+            // Si le paquet est déjà entre les deux autres, pas besoin de le déplacer
             if (numeroPaquet != 2)
             {
-                Carte tmp[7];
-                for (i = 0; i < 7; i++)
+                Carte tmp[TAILLE_PETIT_PAQUET];
+                for (i = 0; i < TAILLE_PETIT_PAQUET; i++)
                 {
                     tmp[i] = petitsPaquets[1][i];
                     petitsPaquets[1][i] = petitsPaquets[numeroPaquet - 1][i];
@@ -223,7 +225,7 @@ int main()
 
         for (i = 0; i < TAILLE_PAQUET_TOUR; i++)
         {
-            paquetTour[i] = petitsPaquets[TAILLE_PAQUET_TOUR % 7][i];
+            paquetTour[i] = petitsPaquets[TAILLE_PAQUET_TOUR % TAILLE_PETIT_PAQUET][i];
         }
     }
 
